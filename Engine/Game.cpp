@@ -60,6 +60,7 @@ Game::Game( MainWindow& wnd )
 				std::stringstream msg;
 				msg << "Collision between " << tid0.name() << " and " << tid1.name() << std::endl;
 				OutputDebugStringA( msg.str().c_str() );
+
 			}
 		}
 	};

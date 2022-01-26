@@ -21,6 +21,10 @@ public:
 		virtual ~ColorTrait() = default;
 		virtual Color GetColor() const = 0;
 		virtual std::unique_ptr<ColorTrait> Clone() const = 0;
+		bool operator==( const ColorTrait& rhs ) const
+		{
+			return GetColor() == rhs.GetColor();
+		}
 	};
 public:
 	static std::unique_ptr<Box> Box::Spawn( float size,const Boundaries& bounds,b2World& world,std::mt19937& rng );
