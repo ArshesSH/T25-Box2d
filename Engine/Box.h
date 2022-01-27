@@ -95,6 +95,14 @@ public:
 	{
 		return *pColorTrait;
 	}
+	bool GetShouldDestroy() const
+	{
+		return shouldDestroy;
+	}
+	void SetShouldDestroy()
+	{
+		shouldDestroy = true;
+	}
 private:
 	static void Init()
 	{
@@ -109,4 +117,5 @@ private:
 	float size;
 	BodyPtr pBody;
 	std::unique_ptr<ColorTrait> pColorTrait;
+	bool shouldDestroy = false;
 };

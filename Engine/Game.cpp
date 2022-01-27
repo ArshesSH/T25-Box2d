@@ -50,7 +50,7 @@ Game::Game( MainWindow& wnd )
 			if( bodyPtrs[0]->GetType() == b2BodyType::b2_dynamicBody &&
 				bodyPtrs[1]->GetType() == b2BodyType::b2_dynamicBody )
 			{
-				Box* boxPtrs[] = { 
+				Box* boxPtrs[] = {
 					reinterpret_cast<Box*>(bodyPtrs[0]->GetUserData()),
 					reinterpret_cast<Box*>(bodyPtrs[1]->GetUserData())
 				};
@@ -61,6 +61,17 @@ Game::Game( MainWindow& wnd )
 				msg << "Collision between " << tid0.name() << " and " << tid1.name() << std::endl;
 				OutputDebugStringA( msg.str().c_str() );
 
+				if (boxPtrs[0]->GetColorTrait() == boxPtrs[1]->GetColorTrait())
+				{
+					boxPtrs[0]->SetShouldDestroy();
+					boxPtrs[1]->SetShouldDestroy();
+				}
+
+				//remove_erase_if( boxPtrs,
+				//	[]( const std::vector<std::unique_ptr<Box>>& pBox )
+				//	{
+				//		return pBox[0]->GetColorTrait() == pBox[1]->GetColorTrait();
+				//	} );
 			}
 		}
 	};
@@ -80,6 +91,7 @@ void Game::UpdateModel()
 {
 	const float dt = ft.Mark();
 	world.Step( dt,8,3 );
+	DestroyBox();
 }
 
 void Game::ComposeFrame()
@@ -88,4 +100,15 @@ void Game::ComposeFrame()
 	{
 		p->Draw( pepe );
 	}
+}
+
+void Game::DestroyBox()
+{
+	const auto new_end = std::remove_if( boxPtrs.begin(), boxPtrs.end(),
+		[]( const std::unique_ptr<Box>& pBox )
+		{
+			return pBox->GetShouldDestroy();
+		}
+	);
+	boxPtrs.erase( new_end, boxPtrs.end() );
 }
