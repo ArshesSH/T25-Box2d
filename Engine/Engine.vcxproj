@@ -161,6 +161,7 @@
     <ClInclude Include="ChiliWin.h" />
     <ClInclude Include="Colors.h" />
     <ClInclude Include="Box.h" />
+    <ClInclude Include="ColorSwitch.h" />
     <ClInclude Include="DefaultGeometryShader.h" />
     <ClInclude Include="DXErr.h" />
     <ClInclude Include="FrameTimer.h" />

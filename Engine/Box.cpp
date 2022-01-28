@@ -1,4 +1,5 @@
 #include "Box.h"
+#include "ColorSwitch.h"
 IndexedTriangleList<Vec2> Box::model;
 
 
@@ -103,4 +104,21 @@ std::unique_ptr<Box> Box::Spawn( float size,const Boundaries& bounds,b2World& wo
 	}
 	
 	return std::make_unique<Box>( std::move( pColorTrait ),world,pos,size,ang,linVel,angVel );
+}
+
+std::unique_ptr<Box::ColorTrait> Box::MakeColorTrait( Color c )
+{
+	ColorSwitch sw;
+	std::unique_ptr<ColorTrait> pColorTrait;
+
+	sw.Case( Colors::Red ) = [&]() {pColorTrait = std::make_unique<RedTrait>(); };
+	sw.Case( Colors::Green ) = [&]() {pColorTrait = std::make_unique<GreenTrait>(); };
+	sw.Case( Colors::Blue ) = [&]() {pColorTrait = std::make_unique<BlueTrait>(); };
+	sw.Case( Colors::White ) = [&]() {pColorTrait = std::make_unique<WhiteTrait>(); };
+	sw.Case( Colors::Yellow ) = [&]() {pColorTrait = std::make_unique<YellowTrait>(); };
+	sw.Default();
+
+	sw[c];
+
+	return std::move(pColorTrait);
 }

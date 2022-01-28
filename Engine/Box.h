@@ -28,6 +28,8 @@ public:
 	};
 public:
 	static std::unique_ptr<Box> Box::Spawn( float size,const Boundaries& bounds,b2World& world,std::mt19937& rng );
+	//static std::unique_ptr<Box> Box::SpawnSplit( const Vec2& linVel, const Vec2& pos, Color c, float size, float ang, float angVel, const Boundaries& bounds, b2World& world );
+	static std::unique_ptr<ColorTrait> Box::MakeColorTrait( Color c );
 	Box( std::unique_ptr<ColorTrait> pColorTrait, b2World& world,const Vec2& pos,
 		float size = 1.0f,float angle = 0.0f,Vec2 linVel = {0.0f,0.0f},float angVel = 0.0f )
 		:
@@ -103,6 +105,14 @@ public:
 	{
 		shouldDestroy = true;
 	}
+	bool GetShouldSplit() const
+	{
+		return shouldSplit;
+	}
+	void SetShouldSplit()
+	{
+		shouldSplit = true;
+	}
 private:
 	static void Init()
 	{
@@ -112,10 +122,12 @@ private:
 			model.indices = { 0,1,2, 1,2,3 };
 		}
 	}
+	
 private:
 	static IndexedTriangleList<Vec2> model;
 	float size;
 	BodyPtr pBody;
 	std::unique_ptr<ColorTrait> pColorTrait;
 	bool shouldDestroy = false;
+	bool shouldSplit = false;
 };

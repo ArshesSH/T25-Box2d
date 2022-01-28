@@ -67,11 +67,6 @@ Game::Game( MainWindow& wnd )
 					boxPtrs[1]->SetShouldDestroy();
 				}
 
-				//remove_erase_if( boxPtrs,
-				//	[]( const std::vector<std::unique_ptr<Box>>& pBox )
-				//	{
-				//		return pBox[0]->GetColorTrait() == pBox[1]->GetColorTrait();
-				//	} );
 			}
 		}
 	};
@@ -91,6 +86,7 @@ void Game::UpdateModel()
 {
 	const float dt = ft.Mark();
 	world.Step( dt,8,3 );
+	SplitBox();
 	DestroyBox();
 }
 
@@ -111,4 +107,42 @@ void Game::DestroyBox()
 		}
 	);
 	boxPtrs.erase( new_end, boxPtrs.end() );
+}
+
+void Game::SplitBox()
+{
+	Vec2 pos;
+	Vec2 linVel;
+	Color color;
+	float angVel;
+	float size;
+	float angle;
+
+	auto i = std::find_if( boxPtrs.begin(), boxPtrs.end(),
+		[&]( const std::unique_ptr<Box>& pBox )
+		{
+			bool flag = false;
+
+			if ( pBox->GetShouldSplit() )
+			{
+				flag = true;
+
+				pos = pBox->GetPosition();
+				linVel = pBox->GetVelocity();
+				color = pBox->GetColorTrait().GetColor();
+				angVel = pBox->GetAngularVelocity();
+				size = pBox->GetSize() / 2.0f;
+				angle = pBox->GetAngle();
+			}
+			return flag;
+		}
+	);
+	if ( i != boxPtrs.end() && (size >= 0.1f) )
+	{
+		boxPtrs.erase( i );
+		boxPtrs.emplace_back( std::make_unique<Box>( Box::MakeColorTrait( color ), world, Vec2( pos.x - size, pos.y + size ), size, angle, linVel, angVel ) );
+		boxPtrs.emplace_back( std::make_unique<Box>( Box::MakeColorTrait( color ), world, Vec2( pos.x + size, pos.y + size ), size, angle, linVel, angVel ) );
+		boxPtrs.emplace_back( std::make_unique<Box>( Box::MakeColorTrait( color ), world, Vec2( pos.x + size, pos.y - size ), size, angle, linVel, angVel ) );
+		boxPtrs.emplace_back( std::make_unique<Box>( Box::MakeColorTrait( color ), world, Vec2( pos.x - size, pos.y - size ), size, angle, linVel, angVel ) );
+	}
 }

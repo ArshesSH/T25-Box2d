@@ -45,6 +45,7 @@ private:
 	/*  User Functions              */
 	/********************************/
 	void DestroyBox();
+	void SplitBox();
 private:
 	MainWindow& wnd;
 	Graphics gfx;
