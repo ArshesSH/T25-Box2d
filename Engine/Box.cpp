@@ -1,5 +1,5 @@
 #include "Box.h"
-#include "ColorSwitch.h"
+#include "TemplateSwitch.h"
 IndexedTriangleList<Vec2> Box::model;
 
 
@@ -108,6 +108,7 @@ std::unique_ptr<Box> Box::Spawn( float size,const Boundaries& bounds,b2World& wo
 
 std::unique_ptr<Box::ColorTrait> Box::MakeColorTrait( Color c )
 {
+	//ColorSwitch sw;
 	ColorSwitch sw;
 	std::unique_ptr<ColorTrait> pColorTrait;
 
