@@ -69,7 +69,14 @@ Game::Game( MainWindow& wnd )
 
 				const auto BoxSplitFunctor = [&]()
 				{
-					boxPtrs[0]->SetShouldSplit();
+					if ( boxPtrs[0]->GetSize() >= minBoxSize )
+					{
+						boxPtrs[0]->SetShouldSplit();
+					}
+					else if ( boxPtrs[1]->GetSize() >= minBoxSize )
+					{
+						boxPtrs[1]->SetShouldSplit();
+					}
 				};
 				const auto BoxDestroyFirstFunctor = [&]()
 				{
@@ -85,6 +92,9 @@ Game::Game( MainWindow& wnd )
 				colorPairSwitch.Case( { Colors::Red, Colors::White } ) = BoxDestroyFirstFunctor;
 				colorPairSwitch.Case( { Colors::White, Colors::Red } ) = BoxDestroySecondFunctor;
 				colorPairSwitch.Case( { Colors::Yellow, Colors::Green } ) = [&]() {boxPtrs[0]->ChangeColor( Colors::Blue ); };
+				colorPairSwitch.Case( { Colors::Green, Colors::Yellow } ) = [&]() {boxPtrs[1]->ChangeColor( Colors::Blue ); };
+				colorPairSwitch.Case( { Colors::Yellow, Colors::Red } ) = [&]() {boxPtrs[1]->ChangeColor( Colors::White ); };
+				colorPairSwitch.Case( { Colors::Red, Colors::Yellow } ) = [&]() {boxPtrs[0]->ChangeColor( Colors::White ); };
 				colorPairSwitch[{c0, c1}];
 
 			}
@@ -157,7 +167,7 @@ void Game::SplitBox()
 			return flag;
 		}
 	);
-	if ( i != boxPtrs.end() && (size >= 0.1f) )
+	if ( i != boxPtrs.end() )
 	{
 		boxPtrs.erase( i );
 		boxPtrs.emplace_back( std::make_unique<Box>( Box::MakeColorTrait( color ), world, Vec2( pos.x - size, pos.y + size ), size, angle, linVel, angVel ) );

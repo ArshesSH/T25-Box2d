@@ -53,6 +53,7 @@ private:
 	/*  User Variables              */
 	static constexpr float boundarySize = 10.0f;
 	static constexpr float boxSize = 1.0f;
+	static constexpr float minBoxSize = 0.25f;
 	static constexpr int nBoxes = 6;
 	std::mt19937 rng = std::mt19937( std::random_device{}() );
 	FrameTimer ft;
