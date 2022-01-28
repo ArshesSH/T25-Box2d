@@ -113,6 +113,10 @@ public:
 	{
 		shouldSplit = true;
 	}
+	void ChangeColor( const Color& c )
+	{
+		pColorTrait = MakeColorTrait( c );
+	}
 private:
 	static void Init()
 	{

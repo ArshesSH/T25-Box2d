@@ -28,6 +28,7 @@ namespace std
 		{
 			auto seed = std::hash<int>{}(cs.first.dword);
 			hash_combine( seed, cs.second.dword );
+			return seed;
 		}
 	};
 }

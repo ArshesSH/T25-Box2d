@@ -21,6 +21,7 @@
 #include "MainWindow.h"
 #include "Game.h"
 #include "Box.h"
+#include "TemplateSwitch.h"
 #include <algorithm>
 #include <sstream>
 #include <typeinfo>
@@ -61,11 +62,30 @@ Game::Game( MainWindow& wnd )
 				msg << "Collision between " << tid0.name() << " and " << tid1.name() << std::endl;
 				OutputDebugStringA( msg.str().c_str() );
 
-				if (boxPtrs[0]->GetColorTrait() == boxPtrs[1]->GetColorTrait())
+				// Color Collision Switch
+				TemplateSwitch<std::pair<Color, Color>> colorPairSwitch;
+				const Color c0 = boxPtrs[0]->GetColorTrait().GetColor();
+				const Color c1 = boxPtrs[1]->GetColorTrait().GetColor();
+
+				const auto BoxSplitFunctor = [&]()
+				{
+					boxPtrs[0]->SetShouldSplit();
+				};
+				const auto BoxDestroyFirstFunctor = [&]()
 				{
 					boxPtrs[0]->SetShouldDestroy();
+				};
+				const auto BoxDestroySecondFunctor = [&]()
+				{
 					boxPtrs[1]->SetShouldDestroy();
-				}
+				};
+
+				colorPairSwitch.Case( { Colors::White, Colors::Blue } ) = BoxSplitFunctor;
+				colorPairSwitch.Case( { Colors::Blue, Colors::White } ) = BoxSplitFunctor;
+				colorPairSwitch.Case( { Colors::Red, Colors::White } ) = BoxDestroyFirstFunctor;
+				colorPairSwitch.Case( { Colors::White, Colors::Red } ) = BoxDestroySecondFunctor;
+				colorPairSwitch.Case( { Colors::Yellow, Colors::Green } ) = [&]() {boxPtrs[0]->ChangeColor( Colors::Blue ); };
+				colorPairSwitch[{c0, c1}];
 
 			}
 		}
